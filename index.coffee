@@ -5,6 +5,8 @@ bayeux = new faye.NodeAdapter(mount: '/bayeux', timeout: 45)
 app = express.createServer()
 bayeux.attach(app)
 
+client = bayeux.getClient()
+
 # allow Cross Origin Resource Sharing 
 app.use (req, res, next) ->
 	res.header("Access-Control-Allow-Origin", "*") 
@@ -58,6 +60,9 @@ app.post '/ads', (req, res, next) ->
 	new_ad.created_at = new Date().toString()
 	new_ad.updated_at = new Date().toString()
 	ads.push new_ad
+	client.publish '/foo',
+		action: 'create'
+		ad: new_ad
 	res.json new_ad
 	
 app.put '/ads/:id', (req, res, next) ->
@@ -74,6 +79,9 @@ app.put '/ads/:id', (req, res, next) ->
 			status = yes
 			break
 	if status
+		client.publish '/foo',
+			action: 'update'
+			ad: req.body
 		res.json req.body
 	else
 		res.send(404)
@@ -84,6 +92,9 @@ app.del '/ads/:id', (req, res, next) ->
 		if parseInt(ads[i]._id) is parseInt(req.params.id)
 			console.log 'delete', i
 			ads.splice(i,1)
+			client.publish '/foo',
+				action: 'delete'
+				_id: req.params.id
 			break
 	res.send(200)
 

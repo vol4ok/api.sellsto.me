@@ -1,4 +1,4 @@
-var ads, app, bayeux, express, faye, lastId;
+var ads, app, bayeux, client, express, faye, lastId;
 express = require('express');
 faye = require('faye');
 bayeux = new faye.NodeAdapter({
@@ -7,6 +7,7 @@ bayeux = new faye.NodeAdapter({
 });
 app = express.createServer();
 bayeux.attach(app);
+client = bayeux.getClient();
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
@@ -52,6 +53,10 @@ app.post('/ads', function(req, res, next) {
   new_ad.created_at = new Date().toString();
   new_ad.updated_at = new Date().toString();
   ads.push(new_ad);
+  client.publish('/foo', {
+    action: 'create',
+    ad: new_ad
+  });
   return res.json(new_ad);
 });
 app.put('/ads/:id', function(req, res, next) {
@@ -72,6 +77,10 @@ app.put('/ads/:id', function(req, res, next) {
     }
   }
   if (status) {
+    client.publish('/foo', {
+      action: 'update',
+      ad: req.body
+    });
     return res.json(req.body);
   } else {
     return res.send(404);
@@ -84,6 +93,10 @@ app.del('/ads/:id', function(req, res, next) {
     if (parseInt(ads[i]._id) === parseInt(req.params.id)) {
       console.log('delete', i);
       ads.splice(i, 1);
+      client.publish('/foo', {
+        action: 'delete',
+        _id: req.params.id
+      });
       break;
     }
   }
