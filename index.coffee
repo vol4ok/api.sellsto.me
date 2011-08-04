@@ -24,17 +24,17 @@ app.use(app.router)
 # example data
 ads = [
 	{
-		_id: 0
+		id: 0
 		body: "Hello world!"
 		created_at: "2011-07-07T19:37:33+03:00"
 		updated_at: "2011-07-07T19:37:33+03:00"
 	},{
-		_id: 1,
+		id: 1,
 		body: "Wow! It's great!",
 		created_at: "2011-07-07T19:37:40+03:00",
 		updated_at: "2011-07-07T19:37:40+03:00"
 	},{
-		_id: 2
+		id: 2
 		body: "WOW!!!"
 		created_at: "2011-07-07T20:39:06+03:00"
 		updated_at: "2011-07-07T20:39:06+03:00"
@@ -56,47 +56,50 @@ app.get '/ads', (req, res, next) ->
 app.post '/ads', (req, res, next) ->
 	console.log req.method, req.url
 	new_ad = req.body
-	lastId = new_ad._id = lastId+1
+	lastId = new_ad.id = lastId+1
 	new_ad.created_at = new Date().toString()
 	new_ad.updated_at = new Date().toString()
 	ads.push new_ad
 	client.publish '/foo',
+		class: 'ad'
 		action: 'create'
-		ad: new_ad
+		data: new_ad
 	res.json new_ad
 	
 app.put '/ads/:id', (req, res, next) ->
 	status = no
 	console.log req.method, req.url
 	req.body.updated_at = new Date().toString()
-	if parseInt(req.body._id) isnt parseInt(req.params.id)
+	if parseInt(req.body.id) isnt parseInt(req.params.id)
 		res.send(500)
 		return
 	for i in [0...ads.length]
-		if parseInt(ads[i]._id) is parseInt(req.params.id)
+		if parseInt(ads[i].id) is parseInt(req.params.id)
 			console.log 'save', i
 			ads[i] = req.body
 			status = yes
 			break
 	if status
 		client.publish '/foo',
+			class: 'ad'
 			action: 'update'
-			ad: req.body
+			data: req.body
 		res.json req.body
 	else
-		res.send(404)
+		res.json(status: 'FAIL', 404)
 		
 app.del '/ads/:id', (req, res, next) ->
 	console.log req.method, req.url
 	for i in [0...ads.length]
-		if parseInt(ads[i]._id) is parseInt(req.params.id)
+		if parseInt(ads[i].id) is parseInt(req.params.id)
 			console.log 'delete', i
 			ads.splice(i,1)
 			client.publish '/foo',
+				class: 'ad'
 				action: 'delete'
-				_id: req.params.id
+				data: req.params.id
 			break
-	res.send(200)
+	res.json(status: 'OK')
 
 app.listen(4000)
 console.log('Express server listening on port 4000')
