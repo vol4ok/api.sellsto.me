@@ -1,13 +1,5 @@
 INSTALLATION:
-
-npm install qs             
-npm install mime
-npm install connect
-npm install express
-npm install redis
-npm install faye
-
+npm install
 
 RUN:
-
 node index.js
