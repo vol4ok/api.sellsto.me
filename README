@@ -1,9 +1,9 @@
 INSTALLATION:
 
-npm install qs             
-npm install mime
-npm install connect
+npm install coffee-script
 npm install express
+npm install mongodb
+npm install mongoose
 npm install redis
 npm install faye
 
