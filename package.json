@@ -21,7 +21,9 @@
 		"mongodb": "0.9.6-7",
     "mongoose": "1.7.4",
 		"redis": "0.6.6",
-		"faye": "0.6.3"
+		"faye": "0.6.3",
+		"underscore": "1.1.7"
+		"async": "0.1.9"
   },
   "devDependencies": {
 	

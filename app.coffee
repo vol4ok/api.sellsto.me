@@ -1,5 +1,30 @@
-express = require('express')
-faye    = require('faye')
+express  = require('express')
+faye     = require('faye')
+mongoose = require('mongoose')
+color    = require('colors')
+# async    = require('async')
+# for debug
+# util     = require('util')
+
+# Model #
+mongoose.connect('mongodb://localhost/sells2me_api_dev')
+
+ObjectId = mongoose.Schema.ObjectId
+Schema   = mongoose.Schema
+
+AdSchema = new mongoose.Schema
+	id: ObjectId
+	body: String
+	created_at: 
+		type: Date
+		default: Date.now
+	updated_at: 
+		type: Date
+		default: Date.now
+	
+Ad = mongoose.model('Ad', AdSchema)
+				
+# pub-sub #
 
 bayeux = new faye.NodeAdapter(mount: '/bayeux', timeout: 45)
 app = express.createServer()
@@ -21,26 +46,6 @@ app.use(express.bodyParser())
 # and route request
 app.use(app.router)
 
-# example data
-ads = [
-	{
-		id: 0
-		body: "Hello world!"
-		created_at: "2011-07-07T19:37:33+03:00"
-		updated_at: "2011-07-07T19:37:33+03:00"
-	},{
-		id: 1,
-		body: "Wow! It's great!",
-		created_at: "2011-07-07T19:37:40+03:00",
-		updated_at: "2011-07-07T19:37:40+03:00"
-	},{
-		id: 2
-		body: "WOW!!!"
-		created_at: "2011-07-07T20:39:06+03:00"
-		updated_at: "2011-07-07T20:39:06+03:00"
-	}
-]
-
 lastId = 2
 
 # routes
@@ -51,55 +56,67 @@ app.get '/', (req, res, next) ->
 
 app.get '/ads', (req, res, next) ->
 	console.log req.method, req.url
-	res.json(ads)
+	Ad.find (err, ads) ->	res.json(ads)
 	
 app.post '/ads', (req, res, next) ->
 	console.log req.method, req.url
-	new_ad = req.body
-	lastId = new_ad.id = lastId+1
-	new_ad.created_at = new Date().toString()
-	new_ad.updated_at = new Date().toString()
-	ads.push new_ad
-	client.publish '/foo',
-		class: 'ad'
-		action: 'create'
-		data: new_ad
-	res.json new_ad
+	ad = new Ad(body: req.body.body)
+	ad.save (err) ->
+		client.publish '/foo',
+			class: 'ad'
+			action: 'create'
+			data: ad
+		res.json(ad)
 	
 app.put '/ads/:id', (req, res, next) ->
 	status = no
 	console.log req.method, req.url
-	req.body.updated_at = new Date().toString()
-	if parseInt(req.body.id) isnt parseInt(req.params.id)
-		res.send(500)
-		return
-	for i in [0...ads.length]
-		if parseInt(ads[i].id) is parseInt(req.params.id)
-			console.log 'save', i
-			ads[i] = req.body
-			status = yes
-			break
-	if status
-		client.publish '/foo',
-			class: 'ad'
-			action: 'update'
-			data: req.body
-		res.json req.body
-	else
-		res.json(status: 'FAIL', 404)
+	Ad.findById req.params.id, (err, ad) ->	
+		if err
+			res.json(status: 'NOT_FOUND', 404) 
+			return
+		ad.body = req.body.body;
+		ad.updated_at = Date.now()
+		ad.save (err) ->
+			console.log 'save', ad
+			client.publish '/foo',
+				class: 'ad'
+				action: 'update'
+				data: ad
+			res.json ad
 		
 app.del '/ads/:id', (req, res, next) ->
 	console.log req.method, req.url
-	for i in [0...ads.length]
-		if parseInt(ads[i].id) is parseInt(req.params.id)
-			console.log 'delete', i
-			ads.splice(i,1)
+	Ad.findById req.params.id, (err, ad) ->	
+		if err or not ad
+			res.json(status: 'NOT_FOUND', 404) 
+			return
+		ad.remove (err) ->
 			client.publish '/foo',
 				class: 'ad'
 				action: 'delete'
 				data: req.params.id
-			break
-	res.json(status: 'OK')
+			res.json(status: 'OK')
 
-app.listen(4000)
-console.log('Express server listening on port 4000')
+# example data
+example = [
+	body: "Hello world!"
+	created_at: "2011-07-07T19:37:33+03:00"
+	updated_at: "2011-07-07T19:37:33+03:00"
+,
+	body: "Wow! It's great!",
+	created_at: "2011-07-07T19:37:40+03:00",
+	updated_at: "2011-07-07T19:37:40+03:00"
+,
+	body: "WOW!!!"
+	created_at: "2011-07-07T20:39:06+03:00"
+	updated_at: "2011-07-07T20:39:06+03:00"
+]
+
+# create sample data and start the server
+Ad.collection.remove {}, (err, result) ->
+	Ad.collection.insert example, ->
+		Ad.find (err, docs) -> 
+			console.log 'create example data: '.yellow, docs
+			app.listen(4000)
+			console.log('Express server listening on port 4000'.green)
