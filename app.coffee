@@ -60,11 +60,12 @@ app.get '/ads', (req, res, next) ->
 	
 app.post '/ads', (req, res, next) ->
 	console.log req.method, req.url
-	ad = new Ad(body: req.body.body)
+	ad = new Ad(body: req.body.data.body)
 	ad.save (err) ->
 		client.publish '/foo',
 			class: 'ad'
 			action: 'create'
+			clientId: req.body.clientId
 			data: ad
 		res.json(ad)
 	
@@ -75,13 +76,14 @@ app.put '/ads/:id', (req, res, next) ->
 		if err
 			res.json(status: 'NOT_FOUND', 404) 
 			return
-		ad.body = req.body.body;
+		ad.body = req.body.data.body;
 		ad.updated_at = Date.now()
 		ad.save (err) ->
 			console.log 'save', ad
 			client.publish '/foo',
 				class: 'ad'
 				action: 'update'
+				clientId: req.body.clientId
 				data: ad
 			res.json ad
 		
@@ -95,6 +97,7 @@ app.del '/ads/:id', (req, res, next) ->
 			client.publish '/foo',
 				class: 'ad'
 				action: 'delete'
+				clientId: req.body.clientId
 				data: req.params.id
 			res.json(status: 'OK')
 
