@@ -2,6 +2,7 @@ express  = require('express')
 faye     = require('faye')
 mongoose = require('mongoose')
 color    = require('colors')
+fs       = require('fs')
 # async    = require('async')
 # for debug
 # util     = require('util')
@@ -100,6 +101,32 @@ app.del '/ads/:id', (req, res, next) ->
 				clientId: req.body.clientId
 				data: req.params.id
 			res.json(status: 'OK')
+			
+app.post '/ads/upload', (req, res, next) ->
+	console.log req.method, req.url, req.params
+	filename = 'upload/'+Math.round(Math.random()*1000000).toString()+'.jpg'
+	ws = fs.createWriteStream(filename, 
+		flags: 'w'
+		encoding: null
+		mode: 0666)
+	console.log filename, ws
+	req.addListener "data", (data) ->
+		console.log '+data', data.length
+		ws.write(data)
+	req.addListener "end", ->
+		console.log 'end!'
+		ws.destroySoon()
+		res.json
+			status: 'OK'
+			url: "http://localhost:4000/#{filename}"
+			
+app.get '/upload/:file(*)', (req, res, next) ->
+	file = req.params.file
+	path = "#{__dirname}/upload/#{file}"
+	res.download path, (err) ->	
+		console.log 'error' if err
+		console.log 'transferred %s', path
+	,	() ->
 
 # example data
 example = [
