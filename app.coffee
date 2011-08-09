@@ -102,6 +102,11 @@ app.del '/ads/:id', (req, res, next) ->
 				data: req.params.id
 			res.json(status: 'OK')
 			
+sleep = (ms) ->
+	startTime = new Date().getTime()
+	`while (new Date().getTime() < startTime + ms)`
+	return
+			
 app.post '/ads/upload', (req, res, next) ->
 	console.log req.method, req.url, req.params
 	filename = 'upload/'+Math.round(Math.random()*1000000).toString()+'.jpg'
@@ -113,6 +118,8 @@ app.post '/ads/upload', (req, res, next) ->
 	req.addListener "data", (data) ->
 		console.log '+data', data.length
 		ws.write(data)
+		#sleep(200) # emulate slow upload
+		
 	req.addListener "end", ->
 		console.log 'end!'
 		ws.destroySoon()
