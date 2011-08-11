@@ -3,6 +3,7 @@ faye     = require('faye')
 mongoose = require('mongoose')
 color    = require('colors')
 fs       = require('fs')
+map      = require('./map')
 # async    = require('async')
 # for debug
 # util     = require('util')
@@ -24,7 +25,27 @@ AdSchema = new mongoose.Schema
 		default: Date.now
 	
 Ad = mongoose.model('Ad', AdSchema)
-				
+
+#Ip to location
+
+IpToLocationSchema = new mongoose.Schema
+  start_ip:     Number
+  end_ip:       Number
+  loc_id:       Number
+
+IpLocationSchema = new mongoose.Schema
+  loc_id:       Number
+  country:      String
+  region:       String
+  city:         String
+  postal_code:  String
+  latitude:     Number
+  longitude:    Number
+  metro_code:   Number
+
+IpToLocation =  mongoose.model('ip_to_location', IpToLocationSchema)
+IpLocation   =  mongoose.model('ip_location', IpLocationSchema)
+
 # pub-sub #
 
 bayeux = new faye.NodeAdapter(mount: '/bayeux', timeout: 45)
@@ -134,6 +155,31 @@ app.get '/upload/:file(*)', (req, res, next) ->
 		console.log 'error' if err
 		console.log 'transferred %s', path
 	,	() ->
+
+app.get "/ipToLocation/:id", (req, res, next) ->
+  console.log req.method, req.url
+  clientIp = req.connection.remoteAddress
+  #todo zhugrov a - Use actual ip address. This need use a valid external ip if you want find any relevant records
+  clientIpNumber = map.decodeIp("87.252.227.12")
+  IpToLocation.findOne({start_ip: {$lte: clientIpNumber}, end_ip: {$gte: clientIpNumber}}, (err, ipToLocation) ->
+    if err or not ipToLocation
+      res.json({status: 'NOT_FOUND', 404})
+      return
+    else
+      IpLocation.findOne({loc_id: ipToLocation.loc_id}, (err, ipLocation) ->
+        if err or not ipLocation
+          res.json({status: 'NOT_FOUND', 404})
+          return
+        else
+          res.json
+            status:     "OK"
+            country:    ipLocation.country
+            region:     ipLocation.region
+            city:       ipLocation.city
+            latitude:   ipLocation.latitude
+            longitude:  ipLocation.longitude
+      )
+  )
 
 # example data
 example = [
