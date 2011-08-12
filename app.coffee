@@ -118,7 +118,7 @@ app.post '/ads/upload', (req, res, next) ->
 	req.addListener "data", (data) ->
 		console.log '+data', data.length
 		ws.write(data)
-		#sleep(200) # emulate slow upload
+		sleep(200) # emulate slow upload
 		
 	req.addListener "end", ->
 		console.log 'end!'
