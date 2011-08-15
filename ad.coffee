@@ -95,3 +95,26 @@ app.get '/upload/:file(*)', (req, res, next) ->
 		console.log 'error' if err
 		console.log 'transferred %s', path
 	,	() ->
+
+# example data
+example = [
+	body: "Hello world!"
+	created_at: "2011-07-07T19:37:33+03:00"
+	updated_at: "2011-07-07T19:37:33+03:00"
+,
+	body: "Wow! It's great!",
+	created_at: "2011-07-07T19:37:40+03:00",
+	updated_at: "2011-07-07T19:37:40+03:00"
+,
+	body: "WOW!!!"
+	created_at: "2011-07-07T20:39:06+03:00"
+	updated_at: "2011-07-07T20:39:06+03:00"
+]
+
+# create sample data
+app.configure (done) ->
+	Ad.collection.remove {}, (err, result) ->
+		Ad.collection.insert example, ->
+			Ad.find (err, docs) -> 
+				console.log 'create example data: '.yellow, docs
+				done()

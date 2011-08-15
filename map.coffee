@@ -2,8 +2,6 @@ app = require('./app')
 IpToLocation =  app.db.model('ip_to_location')
 IpLocation   =  app.db.model('ip_location')
 
-console.log 'map map map'
-
 # Convert ip address string to a ip number
 decodeIp = (remoteAddress) ->
     ipParts = remoteAddress.split(".")
