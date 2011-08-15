@@ -1,4 +1,4 @@
-app = require('./app')
+app = require('../app')
 IpToLocation =  app.db.model('ip_to_location')
 IpLocation   =  app.db.model('ip_location')
 
