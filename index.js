@@ -1,2 +1,3 @@
 require('coffee-script');
-require('./app');
+require('./controllers/ad');
+require('./controllers/map');
