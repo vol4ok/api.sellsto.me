@@ -2,7 +2,8 @@ color    = require('colors')
 fs       = require('fs')
 crypto   = require('crypto')
 mime     = require('mime')
-# async    = require('async')
+gm       = require('gm')
+async    = require('async')
 # for debug
 # util     = require('util')
 
@@ -87,7 +88,7 @@ gen_name = (n) ->
 app.post '/ads/upload', (req, res, next) ->
 	console.log req.method, req.url, req.params
 	console.log req.headers['content-type']
-	name = gen_name(8)+'.jpg'
+	name = gen_name(8)
 	filename = 'upload/'+name
 	ws = fs.createWriteStream(filename, 
 		flags: 'w'
@@ -103,16 +104,39 @@ app.post '/ads/upload', (req, res, next) ->
 	req.addListener "end", ->
 		console.log 'end!'
 		ws.destroySoon()
-		#console.log hash.digest('base64')
-		res.json
-			status: 'OK'
-			name: name
+		img = gm(filename)
+		img.identify (err, info) ->
+			if err
+				res.json(status: 'FAIL', 500)
+				return
+			console.log info
+			task1 = (callback) ->
+				if info.size.width < 640 and info.size.height < 640
+					img
+						.noProfile()
+						.write("images/m_#{name}.#{info.format}".toLowerCase(), callback)					
+				else
+					img
+						.noProfile()
+						.resize(640, 640)
+						.write("images/m_#{name}.#{info.format}".toLowerCase(), callback)
+			task2 = (callback) ->
+				img
+					.noProfile()
+					.resize(50, 50)
+					.write("images/t_#{name}.#{info.format}".toLowerCase(), callback)
+			async.parallel [task1, task2], (err) ->
+				fs.unlink filename, (err) ->
+					console.log 'OK!'
+					res.json
+						status: 'OK'
+						name: name
 			
-app.get '/image/:type/:name', (req, res, next) ->
+app.get '/images/:type/:name', (req, res, next) ->
 	console.log req.params
 	#TODO Filter request
 	name = req.params.name
-	path = "upload/#{name}"
+	path = "images/#{name}"
 	res.header('Content-Type', mime.lookup(name, 'application/octet-stream'));
 	res.download path, (err) ->	
 		console.log 'error' if err
@@ -143,10 +167,18 @@ example = [
 	updated_at: "2011-07-07T20:39:06+03:00"
 ]
 
-# create sample data
 app.configure (done) ->
+	console.log 'cleen uploads...'.yellow
+	re = /^\..*/i
+	for f in fs.readdirSync 'upload/'
+		unless re.test(f)
+			fs.unlinkSync 'upload/'+f
+	re = /\.(jpeg|png|gif)$/i
+	for f in fs.readdirSync 'images/'
+		if re.test(f)
+			fs.unlinkSync 'images/'+f
 	Ad.collection.remove {}, (err, result) ->
 		Ad.collection.insert example, ->
 			Ad.find (err, docs) -> 
-				console.log 'create example data: '.yellow, docs
+				console.log 'create example data...'.yellow
 				done()

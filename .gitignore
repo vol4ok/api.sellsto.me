@@ -1,6 +1,7 @@
 node_modules/*
 *.DS_Store
 .upload/
+.images/
 /.idea/.name
 /.idea/api.sellsto.me.iml
 /.idea/encodings.xml
