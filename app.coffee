@@ -16,6 +16,8 @@ app.use (req, res, next) ->
 		res.header("Access-Control-Allow-Headers",
 		           req.header("access-control-request-headers"))
 	next()
+	
+app.use(express.static(__dirname + '/images'))
 
 # parse body
 app.use(express.bodyParser())

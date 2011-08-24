@@ -24,7 +24,10 @@ app.get '/ads', (req, res, next) ->
 	
 app.post '/ads', (req, res, next) ->
 	console.log req.method, req.url
+	console.log req.body.data.body
 	ad = new Ad(body: req.body.data.body)
+	ad.images.push(name: name) for name in req.body.data.images
+	console.log ad
 	ad.save (err) ->
 		client.publish '/foo',
 			class: 'ad'
@@ -75,11 +78,7 @@ rand = (n) ->
 	
 	
 gen_name = (n) ->
-	a = ["a", "b", "c", "d", "e", "f", "g", "h"
-	     "i", "j", "k", "l", "m", "n", "o", "p"
-	     "q", "r", "s", "t", "u", "v", "w", "x"
-	     "y", "z", "1", "2", "3", "4", "5", "6"
-	     "7", "8", "9"]
+	a = "abcdefghijklmnopqrstuvwxyz123456789"
 	r = []
 	for i in [0..n]
 		r.push(a[rand(a.length-1)])
@@ -132,16 +131,16 @@ app.post '/ads/upload', (req, res, next) ->
 						status: 'OK'
 						name: name
 			
-app.get '/images/:type/:name', (req, res, next) ->
-	console.log req.params
-	#TODO Filter request
-	name = req.params.name
-	path = "images/#{name}"
-	res.header('Content-Type', mime.lookup(name, 'application/octet-stream'));
-	res.download path, (err) ->	
-		console.log 'error' if err
-		console.log 'transferred %s', path
-	,	() ->
+# app.get '/images/:type/:name', (req, res, next) ->
+# 	console.log req.params
+# 	#TODO Filter request
+# 	name = req.params.name
+# 	path = "images/#{name}"
+# 	res.header('Content-Type', mime.lookup(name, 'application/octet-stream'));
+# 	res.download path, (err) ->	
+# 		console.log 'error' if err
+# 		console.log 'transferred %s', path
+# 	,	() ->
 			
 app.get '/upload/remove/:id', (req, res, next) ->
 	file = req.params.file

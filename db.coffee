@@ -5,9 +5,14 @@ Schema   = mongoose.Schema
 
 # Ad
 
+Images = new Schema
+	name: String
+	type: String
+
 AdSchema = new Schema
 	id: ObjectId
 	body: String
+	images: [Images]
 	created_at: 
 		type: Date
 		default: Date.now
