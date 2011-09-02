@@ -37,8 +37,24 @@ IpLocationSchema = new Schema
   longitude:    Number
   metro_code:   Number
 
+TestSearchData = new Schema
+  id: 					ObjectId
+  body:					String
+  price:				Number
+  location:
+    latitude: 	Number
+    longitude:	Number
+  attachments:	Number
+  created_at:
+    type: 			Date
+    default: 		Date.now
+  updated_at:
+    type: 			Date
+    default: 		Date.now
+
 mongoose.model('Ad', AdSchema)
 mongoose.model('ip_to_location', IpToLocationSchema)
 mongoose.model('ip_location', IpLocationSchema)
+mongoose.model('test_search_data', TestSearchData)
 
 module.exports = () -> mongoose.connect('mongodb://localhost/sells2me_api_dev')
