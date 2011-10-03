@@ -25,7 +25,8 @@
 		"faye": "0.6.4",
 		"underscore": "1.1.7",
 		"async": "0.1.9",
-		"gm": "0.5.0"
+		"gm": "0.5.0",
+		"mysql": "0.9.4" 
   },
   "devDependencies": {
 	
