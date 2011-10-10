@@ -4,12 +4,11 @@ crypto   = require('crypto')
 mime     = require('mime')
 gm       = require('gm')
 async    = require('async')
-# for debug
-# util     = require('util')
 
 app = require('../app')
 bayeux = app.bayeux
 Ad = app.db.model('Ad')
+User = app.db.model('User')
 client = bayeux.getClient()
 
 # routes
@@ -131,16 +130,16 @@ app.post '/ads/upload', (req, res, next) ->
 						status: 'OK'
 						name: name
 			
-# app.get '/images/:type/:name', (req, res, next) ->
-# 	console.log req.params
-# 	#TODO Filter request
-# 	name = req.params.name
-# 	path = "images/#{name}"
-# 	res.header('Content-Type', mime.lookup(name, 'application/octet-stream'));
-# 	res.download path, (err) ->	
-# 		console.log 'error' if err
-# 		console.log 'transferred %s', path
-# 	,	() ->
+app.get '/images/:type/:name', (req, res, next) ->
+	console.log req.params
+	#TODO Filter request
+	name = req.params.name
+	path = "images/sample/#{name}"
+	res.header('Content-Type', mime.lookup(name, 'application/octet-stream'));
+	res.download path, (err) ->	
+		console.log 'error' if err
+		console.log 'transferred %s', path
+	,	() ->
 			
 app.get '/upload/remove/:id', (req, res, next) ->
 	file = req.params.file
@@ -152,32 +151,53 @@ app.get '/upload/remove/:id', (req, res, next) ->
 		
 
 # example data
-example = [
-	body: "Hello world!"
+
+example_ads = [
+	body: "The dual-core A5 chip delivers even more power. The 8MP camera with all-new optics also shoots 1080p HD video. And with Siri, iPhone 4S does what you ask. Talk about amazing."
+	images: [{name: "item-1", type: "png"}]
+	location: {longitude: 27.4348093, latitude: 53.8813939}
+	author: 'vol4ok'
+	avator: {name: "av-1", type: "png"}
+	price: '999'
+	count: '12'
 	created_at: "2011-07-07T19:37:33+03:00"
 	updated_at: "2011-07-07T19:37:33+03:00"
 ,
-	body: "Wow! It's great!",
-	created_at: "2011-07-07T19:37:40+03:00",
-	updated_at: "2011-07-07T19:37:40+03:00"
-,
-	body: "WOW!!!"
-	created_at: "2011-07-07T20:39:06+03:00"
-	updated_at: "2011-07-07T20:39:06+03:00"
+	body: "The dual-core A5 chip delivers even more power. The 8MP camera with all-new optics also shoots 1080p HD video. And with Siri, iPhone 4S does what you ask. Talk about amazing."
+	images: [{name: "item-1", type: "png"}]
+	location: {longitude: 27.4348093, latitude: 53.8813939}
+	author: 'vol4ok'
+	avator: {name: "av-1", type: "png"}
+	price: '400'
+	count: '6'
+	created_at: "2011-07-07T19:37:33+03:00"
+	updated_at: "2011-07-07T19:37:33+03:00"
+]
+
+example_users = [
+	name: 'vol4ok'
+	email: 'admin@vol4ok.net'
+	avator: {name: "avator-1", type: "png"}
 ]
 
 app.configure (done) ->
 	console.log 'cleen uploads...'.yellow
+	
 	re = /^\..*/i
 	for f in fs.readdirSync 'upload/'
 		unless re.test(f)
 			fs.unlinkSync 'upload/'+f
+			
 	re = /\.(jpeg|png|gif)$/i
 	for f in fs.readdirSync 'images/'
 		if re.test(f)
 			fs.unlinkSync 'images/'+f
+			
 	Ad.collection.remove {}, (err, result) ->
-		Ad.collection.insert example, ->
-			Ad.find (err, docs) -> 
-				console.log 'create example data...'.yellow
-				done()
+		async.parallel 
+			insertAds: (callback) -> Ad.collection.insert example_ads, callback
+			insertUsers: (callback) -> User.collection.insert example_users, callback
+		, (err, results) ->	
+			console.log 'create example data...'.yellow
+			done()
+				

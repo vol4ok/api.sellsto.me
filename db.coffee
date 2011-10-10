@@ -1,24 +1,38 @@
 mongoose = require('mongoose')
 
-ObjectId = mongoose.Schema.ObjectId
-Schema   = mongoose.Schema
+{Schema} = mongoose
+{ObjectId} = mongoose.Schema
 
 # Ad
 
-Images = new Schema
+Image = 
 	name: String
 	type: String
 
 AdSchema = new Schema
 	id: ObjectId
 	body: String
-	images: [Images]
+	images: [new Schema(Image)]
+	location:
+		longitude: Number
+		latitude: Number
+	author: String
+	price: Number
+	count: Number
 	created_at: 
 		type: Date
 		default: Date.now
 	updated_at: 
 		type: Date
 		default: Date.now
+
+# User
+
+UserSchema = new Schema
+	id: ObjectId
+	name: String
+	email: String
+	avator: Image
 		
 #Ip to location
 
@@ -53,6 +67,7 @@ TestSearchData = new Schema
     default: 		Date.now
 
 mongoose.model('Ad', AdSchema)
+mongoose.model('User', UserSchema)
 mongoose.model('ip_to_location', IpToLocationSchema)
 mongoose.model('ip_location', IpLocationSchema)
 mongoose.model('test_search_data', TestSearchData)
