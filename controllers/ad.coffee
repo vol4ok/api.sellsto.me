@@ -4,6 +4,8 @@ crypto   = require('crypto')
 mime     = require('mime')
 gm       = require('gm')
 async    = require('async')
+qs       = require('qs')
+url      = require('url');
 
 app = require('../app')
 bayeux = app.bayeux
@@ -19,7 +21,12 @@ app.get '/', (req, res, next) ->
 
 app.get '/ads', (req, res, next) ->
 	console.log req.method, req.url
-	Ad.find (err, ads) ->	res.json(ads)
+	q = qs.parse(url.parse(req.url).query)
+	if q['callback']?
+	  Ad.find (err, ads) ->
+	    res.send("#{q['callback']}('#{JSON.stringify(ads)}');", 'Content-Type': 'application/javascript')
+	else
+	  Ad.find (err, ads) ->	res.json(ads)
 	
 app.post '/ads', (req, res, next) ->
 	console.log req.method, req.url
@@ -160,6 +167,46 @@ example_ads = [
 	avator: {name: "av-1", type: "png"}
 	price: '999'
 	count: '12'
+	created_at: "2011-07-07T19:37:33+03:00"
+	updated_at: "2011-07-07T19:37:33+03:00"
+,
+	body: "The dual-core A5 chip delivers even more power. The 8MP camera with all-new optics also shoots 1080p HD video. And with Siri, iPhone 4S does what you ask. Talk about amazing."
+	images: [{name: "item-1", type: "png"}]
+	location: {longitude: 27.4348093, latitude: 53.8813939}
+	author: 'vol4ok'
+	avator: {name: "av-1", type: "png"}
+	price: '400'
+	count: '6'
+	created_at: "2011-07-07T19:37:33+03:00"
+	updated_at: "2011-07-07T19:37:33+03:00"
+,
+	body: "The dual-core A5 chip delivers even more power. The 8MP camera with all-new optics also shoots 1080p HD video. And with Siri, iPhone 4S does what you ask. Talk about amazing."
+	images: [{name: "item-1", type: "png"}]
+	location: {longitude: 27.4348093, latitude: 53.8813939}
+	author: 'vol4ok'
+	avator: {name: "av-1", type: "png"}
+	price: '400'
+	count: '6'
+	created_at: "2011-07-07T19:37:33+03:00"
+	updated_at: "2011-07-07T19:37:33+03:00"
+,
+	body: "The dual-core A5 chip delivers even more power. The 8MP camera with all-new optics also shoots 1080p HD video. And with Siri, iPhone 4S does what you ask. Talk about amazing."
+	images: [{name: "item-1", type: "png"}]
+	location: {longitude: 27.4348093, latitude: 53.8813939}
+	author: 'vol4ok'
+	avator: {name: "av-1", type: "png"}
+	price: '400'
+	count: '6'
+	created_at: "2011-07-07T19:37:33+03:00"
+	updated_at: "2011-07-07T19:37:33+03:00"
+,
+	body: "The dual-core A5 chip delivers even more power. The 8MP camera with all-new optics also shoots 1080p HD video. And with Siri, iPhone 4S does what you ask. Talk about amazing."
+	images: [{name: "item-1", type: "png"}]
+	location: {longitude: 27.4348093, latitude: 53.8813939}
+	author: 'vol4ok'
+	avator: {name: "av-1", type: "png"}
+	price: '400'
+	count: '6'
 	created_at: "2011-07-07T19:37:33+03:00"
 	updated_at: "2011-07-07T19:37:33+03:00"
 ,
