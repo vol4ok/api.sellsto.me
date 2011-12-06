@@ -1,6 +1,6 @@
 express  = require('express')
 require('express-configure')
-faye     = require('faye')
+faye  = require('faye')
 
 app = express.createServer()
 app.db = require('./db')()
@@ -25,7 +25,7 @@ app.use(express.bodyParser())
 # and route request
 app.use(app.router)
 
-process.nextTick -> app.listen(4000)
+process.nextTick -> if process.argv[2] then app.listen(4000, process.argv[2]) else app.listen(4000)
 app.on 'listening', ->
 	console.log('Server listening on port 4000'.green)
 	
