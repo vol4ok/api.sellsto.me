@@ -1,6 +1,7 @@
 express  = require('express')
 require('express-configure')
 faye  = require('faye')
+cfg = require('./config')
 
 app = express.createServer()
 app.db = require('./db')()
@@ -17,7 +18,7 @@ app.use (req, res, next) ->
 		           req.header("access-control-request-headers"))
 	next()
 	
-app.use(express.static(__dirname + '/images'))
+app.use(express.static(cfg.static + '/images'))
 
 # parse body
 app.use(express.bodyParser())
@@ -25,8 +26,8 @@ app.use(express.bodyParser())
 # and route request
 app.use(app.router)
 
-process.nextTick -> if process.argv[2] then app.listen(4000, process.argv[2]) else app.listen(4000)
+process.nextTick -> app.listen(cfg.port, cfg.interface)
 app.on 'listening', ->
-	console.log('Server listening on port 4000'.green)
+	console.log("Server listening on #{cfg.interface}:#{cfg.port}".green)
 	
 module.exports = app

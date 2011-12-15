@@ -1,0 +1,34 @@
+{
+  "enveroument": "development", 
+  "install-dir": "$(PROJECT_DIR)/../../_debug/api",
+  "output-dir": "$(PROJECT_DIR)/build",
+  "verbose": "no",
+  
+  "configure": {
+    "api": {
+      "template": "$(PROJECT_DIR)/src/config.coffee.template",
+      "interface": "127.0.0.1",
+      "port": "4000",
+      "static": "$(OUTPUT_DIR)/static"
+    }, 
+    "nginx": {
+      "template": "$(PROJECT_DIR)/src/nginx.conf.template",
+      "listen": "127.0.0.2:80",
+      "domains": ["api.sellstome.local"],
+      "proxy-url": "http://127.0.0.1:4000",
+      "root-dir": "$(INSTALL_DIR)"
+    }
+  },
+  "static": [
+    {
+      "includes": ["$(PROJECT_DIR)/src"],
+      "allow": [".*"],
+      "deny": ["^node_modules$", "^package.json$", "\\.template$", "(^|\/)\\.", "(^|\/)_"]
+    },
+    {
+      "includes": ["$(PROJECT_DIR)/src"],
+      "allow": ["^node_modules"],
+      "deny": []
+    }
+  ]
+}

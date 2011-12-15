@@ -5,7 +5,8 @@ mime     = require('mime')
 gm       = require('gm')
 async    = require('async')
 qs       = require('qs')
-url      = require('url');
+url      = require('url')
+cfg      = require('../config')
 
 app = require('../app')
 bayeux = app.bayeux
@@ -231,14 +232,14 @@ app.configure (done) ->
 	console.log 'cleen uploads...'.yellow
 	
 	re = /^\..*/i
-	for f in fs.readdirSync 'upload/'
+	for f in fs.readdirSync "#{cfg.static}/upload"
 		unless re.test(f)
-			fs.unlinkSync 'upload/'+f
+			fs.unlinkSync "#{cfg.static}/upload/#{f}"
 			
 	re = /\.(jpeg|png|gif)$/i
-	for f in fs.readdirSync 'images/'
+	for f in fs.readdirSync "#{cfg.static}/images"
 		if re.test(f)
-			fs.unlinkSync 'images/'+f
+			fs.unlinkSync  "#{cfg.static}/images/#{f}"
 			
 	Ad.collection.remove {}, (err, result) ->
 		async.parallel 

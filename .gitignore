@@ -1,4 +1,7 @@
+build/*
 node_modules/*
+src/node_modules/*
+.currnt-config.json
 *.DS_Store
 .upload/
 .images/

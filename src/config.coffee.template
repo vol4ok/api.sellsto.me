@@ -1,0 +1,7 @@
+module.exports = (options) ->
+  """
+  module.exports = 
+    interface: "#{options.interface}"
+    port: "#{options.port}"
+    static: "#{options.static}"
+  """
