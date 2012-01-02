@@ -171,13 +171,13 @@ example_ads = [
 	created_at: "2011-07-07T19:37:33+03:00"
 	updated_at: "2011-07-07T19:37:33+03:00"
 ,
-	body: "The dual-core A5 chip delivers even more power. The 8MP camera with all-new optics also shoots 1080p HD video. And with Siri, iPhone 4S does what you ask. Talk about amazing."
+	body: "Test! The dual-core A5 chip delivers even more power. The 8MP camera with all-new optics also shoots 1080p HD video. And with Siri, iPhone 4S does what you ask. Talk about amazing."
 	images: [{name: "item-1", type: "png"}]
 	location: {longitude: 27.4348093, latitude: 53.8813939}
 	author: 'vol4ok'
 	avator: {name: "av-1", type: "png"}
-	price: '400'
-	count: '6'
+	price: '640'
+	count: '16'
 	created_at: "2011-07-07T19:37:33+03:00"
 	updated_at: "2011-07-07T19:37:33+03:00"
 ,
@@ -187,7 +187,7 @@ example_ads = [
 	author: 'vol4ok'
 	avator: {name: "av-1", type: "png"}
 	price: '400'
-	count: '6'
+	count: '4'
 	created_at: "2011-07-07T19:37:33+03:00"
 	updated_at: "2011-07-07T19:37:33+03:00"
 ,
@@ -196,8 +196,8 @@ example_ads = [
 	location: {longitude: 27.4348093, latitude: 53.8813939}
 	author: 'vol4ok'
 	avator: {name: "av-1", type: "png"}
-	price: '400'
-	count: '6'
+	price: '888'
+	count: '8'
 	created_at: "2011-07-07T19:37:33+03:00"
 	updated_at: "2011-07-07T19:37:33+03:00"
 ,
@@ -206,8 +206,8 @@ example_ads = [
 	location: {longitude: 27.4348093, latitude: 53.8813939}
 	author: 'vol4ok'
 	avator: {name: "av-1", type: "png"}
-	price: '400'
-	count: '6'
+	price: '555'
+	count: '5'
 	created_at: "2011-07-07T19:37:33+03:00"
 	updated_at: "2011-07-07T19:37:33+03:00"
 ,
@@ -216,8 +216,8 @@ example_ads = [
 	location: {longitude: 27.4348093, latitude: 53.8813939}
 	author: 'vol4ok'
 	avator: {name: "av-1", type: "png"}
-	price: '400'
-	count: '6'
+	price: '777'
+	count: '7'
 	created_at: "2011-07-07T19:37:33+03:00"
 	updated_at: "2011-07-07T19:37:33+03:00"
 ]

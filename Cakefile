@@ -367,7 +367,7 @@ build_static = (options) ->
             mkdir.sync(dst, "0755")
         else
           copyWithAsyncCheck = (src, dst) ->
-            if $asyncOperations > 255
+            if $asyncOperations > 10
               setTimeout (-> copyWithAsyncCheck(src, dst)), 100
             else
               $asyncOperations++
@@ -405,10 +405,15 @@ install = (options) ->
         console.log "Create directory: #{relative(__dirname, dst)}".cyan if verbose
         mkdir.sync(dst, "0755")
     else
-      $asyncOperations++
-      copy src, dst, (err) -> 
-        $asyncOperations--
-        console.log "Error: #{err}".red if err
+      copyWithAsyncCheck = (src, dst) ->
+        if $asyncOperations > 10
+          setTimeout (-> copyWithAsyncCheck(src, dst)), 100
+        else
+          $asyncOperations++
+          copy src, dst, (err) -> 
+            $asyncOperations--
+            console.log "Error: #{err}".red if err
+      copyWithAsyncCheck(src,dst)
       count++
       console.log "Install: #{relative(__dirname, src)}  ->  #{dst}".cyan if verbose
   console.log "#{count} files installed to #{install}".green
