@@ -10,25 +10,23 @@
   "author": "Sells2me Team",
   "main": "./index.js",
   "engines": {
-    "node": "~0.4.10"
+    "node": ">=0.4.12"
   },
   "dependencies": {
-    "coffee-script": "~1.1.2",
-		"qs": "0.3.0",
-		"mime": "1.2.2",
-    "colors": "0.5.0",
-    "express": "2.4.2",
-		"express-configure": "0.0.3",
-		"mongodb": "0.9.6-7",
+    "coffee-script": ">=1.1.3",
+    "qs": ">=0.4.0",
+    "colors": ">=0.5.0",
+    "express": ">=2.4.7",
+    "express-configure": "0.0.3",
+    "mongodb": "0.9.7-3-1",
     "mongoose": "1.7.4",
-		"redis": "0.6.6",
-		"faye": "0.6.4",
-		"underscore": "1.1.7",
-		"async": "0.1.9",
-		"gm": "0.5.0",
-		"mysql": "0.9.4" 
+    "redis": "0.6.6",
+    "faye": "0.6.4",
+    "underscore": "1.2.1",
+    "async": ">=0.1.15",
+    "gm": "0.5.0",
+    "mysql": "0.9.4",
+    "mime": ">=1.2.2"
   },
-  "devDependencies": {
-	
-	}
+  "devDependencies": {}
 }
