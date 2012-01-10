@@ -4,3 +4,4 @@ node_modules/*
 .images/
 .idea
 .idea/*
+/node_modules

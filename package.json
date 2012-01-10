@@ -22,7 +22,9 @@
     "async":                "0.1.15",
     "gm":                   "0.6.0",
     "mime":                 "1.2.4",
-    "crypto":               "0.0.3"
+    "crypto":               "0.0.3",
+    "hook.io":              "0.8.6",
+    "forever":              "0.8.2"
   },
   "devDependencies": {}
 }
