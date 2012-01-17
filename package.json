@@ -18,13 +18,16 @@
     "express":              "2.5.4",
     "express-configure":    "0.0.3",
     "mongoose":             "2.4.9",
+    "mongodb":              "0.9.7-3-5",
     "faye":                 "0.7.1",
     "async":                "0.1.15",
     "gm":                   "0.6.0",
     "mime":                 "1.2.4",
     "crypto":               "0.0.3",
     "hook.io":              "0.8.6",
-    "forever":              "0.8.2"
+    "forever":              "0.8.2",
+    "request":              "2.9.3",
+    "underscore":           "1.3.0"
   },
   "devDependencies": {}
 }

@@ -1,6 +1,7 @@
 express  = require('express')
 require('express-configure')
 faye     = require('faye')
+Indexer  = require('./services/search/indexer')
 
 app = express.createServer()
 app.db = require('./db')()
@@ -28,5 +29,42 @@ app.use(app.router)
 process.nextTick -> app.listen(4000)
 app.on 'listening', ->
 	console.log('Server listening on port 4000'.green)
-	
+
+
+## test the indexer work
+ad =
+  id:           'test-object-id'
+  message:      'this is really test message'
+  price:        110
+  currency:     'USD'
+  owner:        'owner-ref-id'
+
+  location:
+    latitude:     56.3
+    longitude:    23.5
+
+  created_at:   new Date()
+  updated_at:   new Date()
+  videos:       ['http://www.youtube.com/watch?v=daJ1uue7ejM&feature=related']
+  images:       ['http://i3.ytimg.com/vi/2J2dwFVZHsY/default.jpg']
+  urls:         []
+  tags:         []
+  mentions:     []
+  description:  'this is really cool product'
+  state:        'published'
+  searchable:   true
+  comments:     []
+  messages:     []
+  statistics:
+    shows:        100
+    views:        300
+    likes:        34
+
+console.log('prepared to create indexer');
+searchIndexer = new Indexer('http://ls.sl.me:8080/ad/update/json')
+searchIndexer.on('ready', () ->
+  searchIndexer.index( ad )
+)
+
+
 module.exports = app

@@ -3,5 +3,7 @@ node_modules/*
 .upload/
 .images/
 .idea
+.gradle/*
 .idea/*
 /node_modules
+/config.json
