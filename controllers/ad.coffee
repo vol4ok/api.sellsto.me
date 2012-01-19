@@ -153,17 +153,35 @@ app.get '/upload/remove/:id', (req, res, next) ->
 
 # example data
 example = [
-	body: "Hello world!"
-	created_at: "2011-07-07T19:37:33+03:00"
-	updated_at: "2011-07-07T19:37:33+03:00"
+  body:       "Hello world!"
+  price:      "100$"
+  count:      "1"
+  images:     [
+                name: "item-1"
+                type: "png"
+              ]
+  created_at: "2011-07-07T19:37:33+03:00"
+  updated_at: "2011-07-07T19:37:33+03:00"
 ,
-	body: "Wow! It's great!",
-	created_at: "2011-07-07T19:37:40+03:00",
-	updated_at: "2011-07-07T19:37:40+03:00"
+  body: "Wow! It's great!",
+  price:      "100$"
+  count:      "1"
+  images:     [
+    name: "item-1"
+    type: "png"
+  ]
+  created_at: "2011-07-07T19:37:40+03:00",
+  updated_at: "2011-07-07T19:37:40+03:00"
 ,
-	body: "WOW!!!"
-	created_at: "2011-07-07T20:39:06+03:00"
-	updated_at: "2011-07-07T20:39:06+03:00"
+  body: "WOW!!!"
+  price:      "100$"
+  count:      "1"
+  images:     [
+    name: "item-1"
+    type: "png"
+  ]
+  created_at: "2011-07-07T20:39:06+03:00"
+  updated_at: "2011-07-07T20:39:06+03:00"
 ]
 
 app.configure (done) ->
