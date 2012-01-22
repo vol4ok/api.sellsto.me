@@ -130,18 +130,7 @@ app.post '/ads/upload', (req, res, next) ->
 					res.json
 						status: 'OK'
 						name: name
-			
-# app.get '/images/:type/:name', (req, res, next) ->
-# 	console.log req.params
-# 	#TODO Filter request
-# 	name = req.params.name
-# 	path = "images/#{name}"
-# 	res.header('Content-Type', mime.lookup(name, 'application/octet-stream'));
-# 	res.download path, (err) ->	
-# 		console.log 'error' if err
-# 		console.log 'transferred %s', path
-# 	,	() ->
-			
+
 app.get '/upload/remove/:id', (req, res, next) ->
 	file = req.params.file
 	path = "#upload/#{file}"
@@ -153,7 +142,7 @@ app.get '/upload/remove/:id', (req, res, next) ->
 
 # example data
 example = [
-  body:       "Hello world!"
+  message:       "Hello world!"
   price:      "100$"
   count:      "1"
   images:     [
@@ -163,7 +152,7 @@ example = [
   created_at: "2011-07-07T19:37:33+03:00"
   updated_at: "2011-07-07T19:37:33+03:00"
 ,
-  body: "Wow! It's great!",
+  message: "Wow! It's great!",
   price:      "100$"
   count:      "1"
   images:     [
@@ -173,7 +162,7 @@ example = [
   created_at: "2011-07-07T19:37:40+03:00",
   updated_at: "2011-07-07T19:37:40+03:00"
 ,
-  body: "WOW!!!"
+  message: "WOW!!!"
   price:      "100$"
   count:      "1"
   images:     [
